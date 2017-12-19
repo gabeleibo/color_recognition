@@ -142,17 +142,17 @@ nnminuslogLikelihood_grad <- function(weights, size_input, size_hidden, size_out
 # Optimization of the weights
 p <- ncol(X)    # size inputs
 k <- length(N)  # size labels
-set.seed(12345)
 
 # Matrices with information about the MSEs of training and testing and the weights for
 # different runs in the size of the training data and number of neurons.
-MSE_Training <- matrix(0, nrow = 46, ncol = 7)
-MSE_Testing <- matrix(0, nrow = 46, ncol = 7)
+MSE_Training <- matrix(0, nrow = 46, ncol = 3)
+MSE_Testing <- matrix(0, nrow = 46, ncol = 3)
 
 # Loop for  size of the training and testing data
-for (j in 1:7){
+for (j in 1:3){
   # Determining the training and testing data
-  per <- 0.3 + 0.1 * j
+  per <- 0.6 + 0.1 * j
+  set.seed(12345)
   SelectRow <- c(sample(seq_len(N[1]), size = floor(per * N[1])),
                  sample((seq_len(N[2]) + N[1]), size = floor(per * N[2])),
                  sample((seq_len(N[3]) + N[1] + N[2]), size = floor(per * N[3])))
@@ -163,6 +163,7 @@ for (j in 1:7){
   
   # Loop for number of neurons in the hidden layer
   for (i in 5:50){
+    set.seed(12345)
     Theta1 <- matrix(runif(i * (p + 1)), nrow = i)
     ThetaF <- matrix(runif(k* (i + 1)), nrow = k)
     weights <- c(as.vector(Theta1), as.vector(ThetaF))
@@ -201,18 +202,20 @@ for (j in 1:7){
 # Selecting the best performace neuronal network and training data size
 # MSE_Training <- as.matrix(read.csv("train_error.csv"))[,2:8]
 # MSE_Testing <- as.matrix(read.csv("test_error.csv"))[,2:8]
-averagePerforming <- (apply(MSE_Testing, 2, sum) / nrow(MSE_Testing))[1:(ncol(MSE_Testing) - 1)]
+averagePerforming <- (apply(MSE_Testing, 2, sum) / nrow(MSE_Testing))
 j <- which(averagePerforming == min(averagePerforming))
-per <- j * 0.1 + 0.3
+per <- j * 0.1 + 0.6
 i <- which(MSE_Testing[, j] == min(MSE_Testing[, j])) + 4 
 
 # Plotting the MSEs per number of neurons in the hidden layer -between 5 and 50 neurons-
 # for size of training data with better results  
-Hidden_layer <- 5:(length(MSE_Testing[, ((per - 0.3) / 0.1)]) + 4)
-plot(Hidden_layer, MSE_Testing[, ((per - 0.3) / 0.1)], type = "l", col = "red", ylim=c(0,0.5))
-lines(Hidden_layer, MSE_Training[, ((per - 0.3) / 0.1)], col="black")
+Hidden_layer <- 5:(length(MSE_Testing[, ((per - 0.6) / 0.1)]) + 4)
+plot(Hidden_layer, MSE_Testing[, ((per - 0.6) / 0.1)], type = "l", col = "red", ylim=c(0,0.5),
+    xlab = "Number of neurons in the hidden layer", ylab = "MSE Testing")
+lines(Hidden_layer, MSE_Training[, ((per - 0.6) / 0.1)], col="black")
 
 # Getting the weights
+set.seed(12345)
 SelectRow <- c(sample(seq_len(N[1]), size = floor(per * N[1])),
                sample((seq_len(N[2]) + N[1]), size = floor(per * N[2])),
                sample((seq_len(N[3]) + N[1] + N[2]), size = floor(per * N[3])))
