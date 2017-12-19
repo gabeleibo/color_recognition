@@ -1,3 +1,5 @@
+# Group 3
+
 ## Running the demo in Python
 
 ```
