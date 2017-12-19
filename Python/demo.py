@@ -62,7 +62,6 @@ while True:
 
         # Cropping image
         cropped_frame = frame[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
-
         # Conversion to hsv
         resized_img = cv2.resize(cropped_frame,(10,10))
         hsv_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2HSV)
@@ -75,8 +74,12 @@ while True:
                 inp.append(value/179) #0-179 is the hue range
         # Feed Forward
         result = forward(inp, weights, 35, 100, 3)
+        condfidence = [round(float(x),4)*100 for x in result[3]]
+        output = {'Green': condfidence[0], 'Red': condfidence[1], 'Blue': condfidence[2]}
+        print(output)
+        max_output = str(max(condfidence))
         classified = [int(x) for x in result[4]]
-
+  
         # De-coding result
         encodings = {'Blue': [0,0,1], 'Red': [0,1,0], 'Green': [1,0,0]}
         for color in encodings:
@@ -85,7 +88,8 @@ while True:
                 break
 
         # Print Results
-        cv2.putText(cropped_frame, answer, (0,50), cv2.FONT_HERSHEY_PLAIN, 3, 255, 3)
+        text_color = {'Blue': (255,0,0), 'Red': (0,0,255), 'Green': (0,255,0)}
+        cv2.putText(cropped_frame, answer, (0,50), cv2.FONT_HERSHEY_PLAIN, 3, text_color[answer], 3)
         cv2.imshow("crop", cropped_frame)
 
     cv2.imshow("Image", frame)
