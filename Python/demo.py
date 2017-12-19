@@ -73,7 +73,7 @@ while True:
             for value in row:
                 inp.append(value/179) #0-179 is the hue range
         # Feed Forward
-        result = forward(inp, weights, 35, 100, 3)
+        result = forward(inp, weights, 6, 100, 3)
         condfidence = [round(float(x),4)*100 for x in result[3]]
         output = {'Green': condfidence[0], 'Red': condfidence[1], 'Blue': condfidence[2]}
         print(output)
