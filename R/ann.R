@@ -266,8 +266,8 @@ table
 # Percentage of the correctly classified predictions over all
 accuracy <- sum(diag(table)) / sum(table)
 # Fraction of correctly predicted of an actual class
-precision <- diag(table) / apply(table, 2, sum)
+precision <- diag(table) / apply(table, 1, sum)
 # Fraction of correctly predicted of a predicted class
-recall <- diag(table) / apply(table, 1, sum)
+recall <- diag(table) / apply(table, 2, sum)
 # Weighted average of precision and recall
 f1 <- 2 * precision * recall / (precision + recall)
